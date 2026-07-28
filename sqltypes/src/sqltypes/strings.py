@@ -1,4 +1,5 @@
 from typing import TypeVar, Callable
+from decimal import Decimal
 from pydantic import TypeAdapter
 from sqlalchemy.types import TypeDecorator, String
 from .meta import CustomTypeMeta
@@ -22,3 +23,11 @@ class ValidatedStr(type):
       Type.validate_python(x)
       return x # type: ignore
     return CustomTypeMeta(LiteralType.__name__, (), {}, String, dump=dump, parse=parse)
+
+class DecimalStr(type):
+  def __new__(cls) -> type[TypeDecorator[T]]:
+    def dump(x: Decimal) -> str:
+      return str(x)
+    def parse(x: str):
+      return Decimal(x)
+    return CustomTypeMeta('DecimalStr', (), {}, String, dump=dump, parse=parse)

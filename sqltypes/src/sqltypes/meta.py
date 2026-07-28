@@ -21,4 +21,6 @@ class CustomTypeMeta(type):
           return parse(value)
 
     # Return the new class type
-    return type(name, (CustomType, *bases), dct)
+    cls = type(name, (CustomType, *bases), dct)
+    cls.cache_ok = True # otherwise it doesn't get it, idk
+    return cls
